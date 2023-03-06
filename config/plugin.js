@@ -2,7 +2,7 @@
 
 /** @type Egg.EggPlugin */
 module.exports = {
-  // had enabled by egg
+  // had enabled by eggx
   // static: {
   //   enable: true,
   // }

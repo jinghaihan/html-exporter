@@ -16,11 +16,28 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1678070911437_1773';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = [
+    'rateLimit',
+  ];
+
+  config.security = {
+    csrf: {
+      enable: false,
+      ignoreJSON: true,
+    },
+  };
 
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
+  };
+
+  config.cluster = {
+    listen: {
+      path: '',
+      port: 8000,
+      hostname: '0.0.0.0',
+    },
   };
 
   return {
