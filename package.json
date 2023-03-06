@@ -9,6 +9,7 @@
   "dependencies": {
     "egg": "^3",
     "egg-scripts": "^2",
+    "eureka-js-client": "^4.5.0",
     "koa2-ratelimit": "^0.9.0",
     "puppeteer": "13.5.0",
     "uuid": "^3.2.1"

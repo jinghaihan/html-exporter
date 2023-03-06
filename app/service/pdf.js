@@ -30,7 +30,7 @@ const pdfConfig = {
 class PDFService extends Service {
   async createPDF(params) {
     try {
-      const { host, port } = this.config.env;
+      const { host, port } = this.config.env.export;
       const url = `http://${host}:${port}/${pageRoute[params.type]}/?id=${params.id}&type=export`;
 
       const pdf = await this.buildPDF(url, params);
@@ -90,7 +90,10 @@ class PDFService extends Service {
   }
   async notify(data) {
     try {
-      const { callbackUrl } = this.config.env;
+      const { callbackService } = this.config.env.export;
+
+      const app = global.eureka.cache.app[callbackService];
+      const callbackUrl = `http://${app.ipAddr}:${app.port.$}/file/export/task`;
 
       const response = await this.ctx.curl(callbackUrl, {
         method: 'POST',
