@@ -1,5 +1,6 @@
 const pageRoute = {
-  STATEMENT: '/statementView',
+  REPORT: 'reportView',
+  STATEMENT: 'statementView',
 };
 
 module.exports = {

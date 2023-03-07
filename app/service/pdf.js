@@ -17,12 +17,6 @@ const browserConfig = {
 };
 
 const pdfConfig = {
-  margin: {
-    top: 50,
-    bottom: 50,
-    left: 0,
-    right: 0,
-  },
   displayHeaderFooter: false,
   printBackground: true,
 };
@@ -31,7 +25,7 @@ class PDFService extends Service {
   async createPDF(params) {
     try {
       const { host, port } = this.config.env.export;
-      const url = `http://${host}:${port}/${pageRoute[params.type]}/?id=${params.id}&type=export`;
+      const url = `http://${host}:${port}/#/${pageRoute[params.type]}?type=EXPORT&id=${params.id}&operatorId=${params.operatorId}&operatorName=${params.operatorName}`;
 
       const pdf = await this.buildPDF(url, params);
       this.savePDF(pdf);
@@ -63,11 +57,23 @@ class PDFService extends Service {
     try {
       // 开启新TAB
       const page = await browser.newPage();
+
+      // 控制台日志
+      page
+        // .on('console', message =>
+        //   console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+        .on('pageerror', ({ message }) => console.log(message))
+        // .on('response', response =>
+        //   console.log(`${response.status()} ${response.url()}`))
+        .on('requestfailed', request =>
+          console.log(`${request.failure().errorText} ${request.url()}`));
+
       // 设置视窗尺寸
       await page.setViewport({
         width: params.width,
         height: params.height,
       });
+
       // 页面跳转
       await page.goto(url, {
         waitUntil: 'networkidle0',
@@ -75,7 +81,11 @@ class PDFService extends Service {
       });
 
       // 生成PDF Buffer
-      const PDFBuffer = await page.pdf(pdfConfig);
+      const PDFBuffer = await page.pdf({
+        width: params.width,
+        height: params.height,
+        ...pdfConfig,
+      });
       return PDFBuffer;
     } catch (error) {
       throw error;
