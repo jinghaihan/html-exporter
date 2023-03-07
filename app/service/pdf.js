@@ -25,7 +25,19 @@ class PDFService extends Service {
   async createPDF(params) {
     try {
       const { host, port } = this.config.env.export;
-      const url = `http://${host}:${port}/#/${pageRoute[params.type]}?type=EXPORT&id=${params.id}&operatorId=${params.operatorId}&operatorName=${params.operatorName}`;
+
+      // 页面参数
+      const query = {
+        type: 'EXPORT',
+        id: params.id,
+        paperId: params.paperId,
+        operatorId: params.operatorId,
+        operatorName: params.operatorName,
+      };
+      let url = `http://${host}:${port}/#/${pageRoute[params.type]}`;
+      Object.keys(query).forEach((key, index) => {
+        url += index ? `&${key}=${query[key]}` : `?${key}=${query[key]}`;
+      });
 
       const pdf = await this.buildPDF(url, params);
       this.savePDF(pdf);
@@ -95,7 +107,7 @@ class PDFService extends Service {
   }
   async savePDF(file) {
     fsPromises.writeFile('./file/test.pdf', file, function(err) {
-      console.log(err);
+      return err;
     });
   }
   async notify(data) {
